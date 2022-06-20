@@ -3,42 +3,36 @@
 #include <string.h>
 #include "list.h"
 
-#define DEFAULT_CAPACITY 8
+#define DEFAULT_CAPACITY 16
 
 static void Resize(List* list, unsigned int newCapacity)
 {
-    list->data = realloc(list->data, newCapacity);
+    list->data = realloc(list->data, newCapacity * list->elementSize);
     list->capacity = newCapacity;
 }
 
-List* ListInitializeDefault(unsigned int elementSize)
+void ListInitializeDefault(List* list, unsigned int elementSize)
 {
-    List* list = (List*)malloc(sizeof(List));
-    if (list == NULL) return NULL;
     list->count = 0;
     list->capacity = DEFAULT_CAPACITY;
     list->elementSize = elementSize;
     list->data = malloc(DEFAULT_CAPACITY * elementSize);
-    return list;
 }
 
-List* ListInitialize(unsigned int capacity, unsigned int elementSize)
+void ListInitialize(List* list, unsigned int capacity, unsigned int elementSize)
 {
-    List* list = (List*)malloc(sizeof(List));
-    if (list == NULL) return NULL;
     list->count = 0;
     list->capacity = capacity;
     list->elementSize = elementSize;
     list->data = malloc(capacity * elementSize);
-    return list;
 }
 
 void ListDelete(List* list)
 {
     free(list->data);
-    free(list);
 }
 
+// Adds the value to the end of the list
 void ListAdd(List* list, void* value)
 {
     if (list->count + 1 > list->capacity)
@@ -50,6 +44,19 @@ void ListAdd(List* list, void* value)
     list->count++;
 }
 
+// Allocates a space in memory at the end of the array and returns the pointer to that memory
+// The pointer can then be used to initialize an object in place
+void* ListAddInPlace(List* list)
+{
+    unsigned int count = list->count;
+    if (count + 1 > list->capacity)
+        Resize(list, list->capacity * 2);
+
+    list->count = count + 1;
+    return (char*)list->data + list->elementSize * count;
+}
+
+// Inserts the value into the list at the given index
 void ListInsert(List* list, unsigned int index, void* value)
 {
     if (list->count + 1 > list->capacity)
@@ -65,6 +72,7 @@ void ListInsert(List* list, unsigned int index, void* value)
     list->count++;
 }
 
+// Removes the element at the given index
 void ListRemove(List* list, unsigned int index)
 {
     unsigned int newCount = list->count - 1;
@@ -78,9 +86,4 @@ void ListRemove(List* list, unsigned int index)
 
     if (newCount < list->capacity / 2)
         Resize(list, list->capacity / 2);
-}
-
-inline void* ListGet(List* list, unsigned int index)
-{
-    return (void*)((char*)list->data + index * list->elementSize);
 }

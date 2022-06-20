@@ -1,0 +1,1 @@
+objdump -d -M intel -S main.exe > dump.asm
