@@ -9,6 +9,8 @@ typedef struct List
 } List;
 
 #define ListGet(list, index, DATATYPE) *((DATATYPE*)list.data + index)
+#define ListGetPtr(list, index, DATATYPE) (DATATYPE*)list.data + index
+
 
 void ListInitialize(List* list, unsigned int capacity, unsigned int elementSize);
 void ListInitializeDefault(List* list, unsigned int elementSize);

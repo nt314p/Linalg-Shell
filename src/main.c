@@ -1,57 +1,23 @@
 #include "list.h"
+#include "tokenizer.h"
 #include <stdio.h>
 
 #define MAX_INPUT_SIZE 256
 
 int main()
 {
+    char inputBuffer[MAX_INPUT_SIZE] = { 0 };
     setbuf(stdout, NULL);
     printf("Initialized\n\n");
+    fgets(inputBuffer, MAX_INPUT_SIZE, stdin);
 
-    List a;
-    ListInitializeDefault(&a, sizeof(int));
+    List tokenList;
+    Tokenize(&tokenList, inputBuffer);
 
-    for (int i = 0; i < 30; i++)
+    for (int i = 0, n = tokenList.count; i < n; i++)
     {
-        *(int*)ListAddInPlace(&a) = i;
+        PrintToken(ListGetPtr(tokenList, i, Token));
     }
-
-    for (int i = 0; i < a.count; i++)
-    {
-        printf("%d, ", ListGet(a, i, int));
-    }
-    printf("\n");
-
-    printf("Count is: %d\n", a.count);
-    printf("Capacity is: %d\n\n", a.capacity);
-
-    for (int i = 28; i >= 0; i -= 2)
-    {
-        ListRemove(&a, i);
-    }
-
-    for (int i = 0; i < a.count; i++)
-    {
-        printf("%d, ", ListGet(a, i, int));
-    }
-    printf("\n");
-
-    printf("Count is: %d\n", a.count);
-    printf("Capacity is: %d\n\n", a.capacity);
-
-
-    int nOne = -1;
-    ListInsert(&a, 0, &nOne);
-    ListInsert(&a, 3, &nOne);
-
-    for (int i = 0; i < a.count; i++)
-    {
-        printf("%d, ", ListGet(a, i, int));
-    }
-    printf("Count is: %d\n", a.count);
-    printf("Capacity is: %d\n", a.capacity);
-
-    ListDelete(&a);
 
     return 0;
 }
