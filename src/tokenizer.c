@@ -181,16 +181,17 @@ void Tokenize(List* tokenList, const char* input)
         }
 
         Token* token = (Token*)ListAddInPlace(tokenList);
-        token->columnNumber = cursorIndex + 1;
         token->type = tokenType;
 
         if (isSingleCharacterToken)
         {
+            token->columnNumber = cursorIndex + 1;
             token->charValue = currentToken;
             cursorIndex++;
         }
         else
         {
+            token->columnNumber = multiCharStartIndex + 1;
             int tokenStringLength = cursorIndex - multiCharStartIndex;
             token->value = (char*)malloc(tokenStringLength + 1);
             memcpy(token->value, input + multiCharStartIndex, tokenStringLength);
